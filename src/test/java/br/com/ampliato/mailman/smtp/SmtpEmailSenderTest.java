@@ -26,14 +26,14 @@ public class SmtpEmailSenderTest {
 
 	@Before
 	public void setUp () {
-		emailSender = getEmailSender();
+		emailSender = new SmtpEmailSender("test.host.com", 587);
 	}
 
 	@Test
 	public void testBuildSimpleEmail() throws Exception {
 		Email email = getSimpleEmail();
 
-		org.apache.commons.mail.Email commonsEmail = emailSender.buildCommonEmail(email);
+		org.apache.commons.mail.Email commonsEmail = emailSender.buildCommonsEmail(email);
 		assertNotNull(commonsEmail);
 		assertTrue(commonsEmail instanceof SimpleEmail);
 
@@ -54,7 +54,7 @@ public class SmtpEmailSenderTest {
 	public void testBuildHtmlEmail() throws Exception {
 		Email email = getHtmlEmail();
 
-		org.apache.commons.mail.Email commonsEmail = emailSender.buildCommonEmail(email);
+		org.apache.commons.mail.Email commonsEmail = emailSender.buildCommonsEmail(email);
 		assertNotNull(commonsEmail);
 		assertTrue(commonsEmail instanceof ImageHtmlEmail);
 
@@ -76,7 +76,7 @@ public class SmtpEmailSenderTest {
 		Email email = getSimpleEmail();
 		email.addRecipient(RecipientType.CC, RECIPIENT_NAME, RECIPIENT_ADDRESS);
 
-		org.apache.commons.mail.Email commonsEmail = emailSender.buildCommonEmail(email);
+		org.apache.commons.mail.Email commonsEmail = emailSender.buildCommonsEmail(email);
 		assertNotNull(commonsEmail);
 
 		assertContainsRecipients(email.getRecipients(), commonsEmail);
@@ -87,7 +87,7 @@ public class SmtpEmailSenderTest {
 		Email email = getSimpleEmail();
 		email.addRecipient(RecipientType.BCC, RECIPIENT_NAME, RECIPIENT_ADDRESS);
 
-		org.apache.commons.mail.Email commonsEmail = emailSender.buildCommonEmail(email);
+		org.apache.commons.mail.Email commonsEmail = emailSender.buildCommonsEmail(email);
 		assertNotNull(commonsEmail);
 
 		assertContainsRecipients(email.getRecipients(), commonsEmail);
@@ -101,7 +101,7 @@ public class SmtpEmailSenderTest {
 
 		Email email = getSimpleEmail();
 
-		org.apache.commons.mail.Email commonsEmail = emailSender.buildCommonEmail(email);
+		org.apache.commons.mail.Email commonsEmail = emailSender.buildCommonsEmail(email);
 		assertNotNull(commonsEmail);
 	}
 
@@ -112,28 +112,28 @@ public class SmtpEmailSenderTest {
 
 		Email email = getSimpleEmail();
 
-		org.apache.commons.mail.Email commonsEmail = emailSender.buildCommonEmail(email);
+		org.apache.commons.mail.Email commonsEmail = emailSender.buildCommonsEmail(email);
 		assertNotNull(commonsEmail);
 	}
 
 	@Test
 	public void testBuilEmailWithStartTlsEnabled () throws Exception {
-		emailSender.setStartTlsEnabled(true);
+		emailSender.setStarttlsEnabled(true);
 
 		Email email = getSimpleEmail();
 
-		org.apache.commons.mail.Email commonsEmail = emailSender.buildCommonEmail(email);
+		org.apache.commons.mail.Email commonsEmail = emailSender.buildCommonsEmail(email);
 		assertNotNull(commonsEmail);
 		assertTrue(commonsEmail.getMailSession().getProperty("mail.smtp.starttls.enable").equals("true"));
 	}
 
 	@Test
 	public void testBuilEmailWithStartTlsRequired () throws Exception {
-		emailSender.setStartTlsRequired(true);
+		emailSender.setStarttlsRequired(true);
 
 		Email email = getSimpleEmail();
 
-		org.apache.commons.mail.Email commonsEmail = emailSender.buildCommonEmail(email);
+		org.apache.commons.mail.Email commonsEmail = emailSender.buildCommonsEmail(email);
 		assertNotNull(commonsEmail);
 		assertTrue(commonsEmail.getMailSession().getProperty("mail.smtp.starttls.required").equals("true"));
 	}
@@ -180,14 +180,6 @@ public class SmtpEmailSenderTest {
 		assertEquals(sizeTo, email.getToAddresses().size());
 		assertEquals(sizeCc, email.getCcAddresses().size());
 		assertEquals(sizeBcc, email.getBccAddresses().size());
-	}
-
-	private SmtpEmailSender getEmailSender () {
-		SmtpEmailSender emailSender = new SmtpEmailSender("test.host.com");
-
-		emailSender.setSmtpPort(99999);
-
-		return emailSender;
 	}
 
 	private Email getSimpleEmail () {

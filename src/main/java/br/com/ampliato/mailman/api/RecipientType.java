@@ -1,5 +1,15 @@
 package br.com.ampliato.mailman.api;
 
+/**
+ * Defines the types of recipients.
+ */
 public enum RecipientType {
-	BCC, CC, TO
+	/** Blind carbon copy */
+	BCC,
+
+	/** Carbon copy */
+	CC,
+
+	/** Primary */
+	TO
 }

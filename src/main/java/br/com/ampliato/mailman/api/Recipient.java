@@ -1,12 +1,29 @@
 package br.com.ampliato.mailman.api;
 
+import javax.annotation.Nonnull;
+
+/**
+ * Representation of an email recipient.
+ */
 public class Recipient {
 
+	/** The type of this recipient. */
 	private RecipientType type;
+
+	/** The address of this recipient. */
 	private String address;
+
+	/** The name of this recipient. */
 	private String name;
 
-	public Recipient(RecipientType type, String name, String address) {
+	/**
+	 * Create a new recipient.
+	 *
+	 * @param type
+	 * @param name
+	 * @param address
+	 */
+	public Recipient(@Nonnull RecipientType type, String name, @Nonnull String address) {
 		this.type = type;
 		this.name = name;
 		this.address = address;

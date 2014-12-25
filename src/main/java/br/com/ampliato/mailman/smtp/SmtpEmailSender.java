@@ -8,26 +8,64 @@ import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.ImageHtmlEmail;
 import org.apache.commons.mail.SimpleEmail;
 
+import javax.annotation.Nonnull;
 import javax.mail.Authenticator;
 import javax.mail.MessagingException;
 import java.util.List;
 
+/**
+ * A EmailSender that uses SMTP.
+ *
+ * The underlying implementation uses Apache Commons Email.
+ */
 public class SmtpEmailSender implements EmailSender {
-	private String hostName;
-	private int smtpPort;
-	private String username, password;
-	private Authenticator authenticator;
-	private boolean startTlsEnabled;
-	private boolean startTlsRequired;
+	/** The address of the SMTP host. */
+	private final String host;
 
-	public SmtpEmailSender(String hostName) {
-		this.hostName = hostName;
+	/** The port of the SMTP host. */
+	private final int port;
+
+	/** The username used for authentication. */
+	private String username;
+
+	/** The password used for authentication. */
+	private String password;
+
+	/**
+	 * An authenticator. If an authenticator is set, the username and password are ignored.
+	 */
+	private Authenticator authenticator;
+
+	/** Whether to enable STARTTLS. */
+	private boolean starttlsEnabled;
+
+	/** Whether to require STARTTLS. */
+	private boolean starttlsRequired;
+
+	/**
+	 * Create a smtp email sender for the specified host.
+	 *
+	 * @param host
+	 */
+	public SmtpEmailSender(@Nonnull String host) {
+		this(host, 587);
+	}
+
+	/**
+	 * Create a smtp email sender for the specified host, using the specified port.
+	 *
+	 * @param host
+	 * @param port
+	 */
+	public SmtpEmailSender(@Nonnull String host, int port) {
+		this.host = host;
+		this.port = port;
 	}
 
 	@Override
-	public void send(Email email) throws MessagingException {
+	public void send(@Nonnull Email email) throws MessagingException {
 		try {
-			org.apache.commons.mail.Email commonEmail = buildCommonEmail(email);
+			org.apache.commons.mail.Email commonEmail = buildCommonsEmail(email);
 
 			commonEmail.send();
 		} catch (EmailException emailException) {
@@ -35,7 +73,14 @@ public class SmtpEmailSender implements EmailSender {
 		}
 	}
 
-	protected org.apache.commons.mail.Email buildCommonEmail(Email email) throws EmailException {
+	/**
+	 * Build an email as specified by Apache Commons Email API from an Email object.
+	 *
+	 * @param email
+	 * @return An org.apache.commons.mail.Email
+	 * @throws EmailException
+	 */
+	protected org.apache.commons.mail.Email buildCommonsEmail(@Nonnull Email email) throws EmailException {
 		org.apache.commons.mail.Email commonEmail;
 
 		if (email.getType().equals(EmailType.PLAIN_TEXT)) {
@@ -71,10 +116,10 @@ public class SmtpEmailSender implements EmailSender {
 			}
 		}
 
-		commonEmail.setHostName(this.hostName);
-		commonEmail.setSmtpPort(this.smtpPort);
-		commonEmail.setStartTLSEnabled(this.startTlsEnabled);
-		commonEmail.setStartTLSRequired(this.startTlsRequired);
+		commonEmail.setHostName(this.host);
+		commonEmail.setSmtpPort(this.port);
+		commonEmail.setStartTLSEnabled(this.starttlsEnabled);
+		commonEmail.setStartTLSRequired(this.starttlsRequired);
 
 		if (this.authenticator == null) {
 			commonEmail.setAuthentication(this.username, this.password);
@@ -85,25 +130,25 @@ public class SmtpEmailSender implements EmailSender {
 		return commonEmail;
 	}
 
+	/**
+	 * Set the username and password used on a default authentication.
+	 *
+	 * If an authenticator is defined, this settings will be ignored.
+	 *
+	 * @param username
+	 * @param password
+	 */
 	public void setAuthentication(String username, String password) {
 		this.setUsername(username);
 		this.setPassword(password);
 	}
 
-	public String getHostName() {
-		return hostName;
+	public String getHost() {
+		return host;
 	}
 
-	public void setHostName(String hostName) {
-		this.hostName = hostName;
-	}
-
-	public int getSmtpPort() {
-		return smtpPort;
-	}
-
-	public void setSmtpPort(int smtpPort) {
-		this.smtpPort = smtpPort;
+	public int getPort() {
+		return port;
 	}
 
 	public String getUsername() {
@@ -130,19 +175,19 @@ public class SmtpEmailSender implements EmailSender {
 		this.authenticator = authenticator;
 	}
 
-	public boolean isStartTlsEnabled() {
-		return startTlsEnabled;
+	public boolean isStarttlsEnabled() {
+		return starttlsEnabled;
 	}
 
-	public void setStartTlsEnabled(boolean startTlsEnabled) {
-		this.startTlsEnabled = startTlsEnabled;
+	public void setStarttlsEnabled(boolean starttlsEnabled) {
+		this.starttlsEnabled = starttlsEnabled;
 	}
 
-	public boolean isStartTlsRequired() {
-		return startTlsRequired;
+	public boolean isStarttlsRequired() {
+		return starttlsRequired;
 	}
 
-	public void setStartTlsRequired(boolean startTlsRequired) {
-		this.startTlsRequired = startTlsRequired;
+	public void setStarttlsRequired(boolean starttlsRequired) {
+		this.starttlsRequired = starttlsRequired;
 	}
 }

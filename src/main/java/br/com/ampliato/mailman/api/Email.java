@@ -1,29 +1,55 @@
 package br.com.ampliato.mailman.api;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Email {
+/**
+ * Representation of an email.
+ */
+public final class Email {
 
+	/** The type of this email. */
 	private final EmailType type;
+
+	/** The subject of this email. */
 	private String subject;
+
+	/** The message of this email. */
 	private String message;
 
-	private String senderAddress;
+	/** The address of the sender of this email. */
 	private String senderName;
+
+	/** The name of the sender of this email. */
+	private String senderAddress;
+
+	/** The recipients of this email. */
 	private List<Recipient> recipients;
 
+	/**
+	 * Create a new plain text email.
+	 */
 	public Email () {
 		this(EmailType.PLAIN_TEXT);
 	}
 
-	public Email (EmailType type) {
+	/**
+	 * Create a new email of the specified type.
+	 *
+	 * @param type
+	 */
+	public Email (@Nonnull EmailType type) {
 		super();
 
 		this.type = type;
 	}
 
-	public void addRecipient(Recipient recipient) {
+	/**
+	 * Add a recipient to the recipients list.
+	 * @param recipient
+	 */
+	public void addRecipient(@Nonnull Recipient recipient) {
 		if (this.recipients == null) {
 			this.recipients = new ArrayList<>();
 		}
@@ -31,14 +57,33 @@ public class Email {
 		this.recipients.add(recipient);
 	}
 
-	public void addRecipient(RecipientType type, String name, String address) {
+	/**
+	 * Add a recipient to the recipients list.
+	 *
+	 * @param type
+	 * @param name
+	 * @param address
+	 */
+	public void addRecipient(@Nonnull RecipientType type, String name, @Nonnull String address) {
 		this.addRecipient(new Recipient(type, name, address));
 	}
 
-	public void addRecipient(RecipientType type, String address) {
+	/**
+	 * Add a recipient to the recipients list.
+	 *
+ 	 * @param type
+	 * @param address
+	 */
+	public void addRecipient(@Nonnull RecipientType type, @Nonnull String address) {
 		this.addRecipient(new Recipient(type, null, address));
 	}
 
+	/**
+	 * Set the sender of this email.
+	 *
+	 * @param senderAddress
+	 * @param senderName
+	 */
 	public void setFrom(String senderAddress, String senderName) {
 		this.setSenderAddress(senderAddress);
 		this.setSenderName(senderName);
